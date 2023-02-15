@@ -102,6 +102,10 @@ func NewInitCommand() cli.Command {
 				Name:  "exclude-path-length",
 				Usage: "Exclude 'Path Length Constraint' from this CA certificate",
 			},
+			cli.StringSliceFlag{
+				Name:  "crl-distro-endpoints",
+				Usage: "Distribution endpoints for the CRL",
+			},
 		},
 		Action: initAction,
 	}
@@ -194,7 +198,7 @@ func initAction(c *cli.Context) {
 		pkix.WithPathlenOption(c.Int("path-length"), c.Bool("exclude-path-length")),
 	}
 
-	crt, err := pkix.CreateCertificateAuthorityWithOptions(key, c.String("organizational-unit"), expiresTime, c.String("organization"), c.String("country"), c.String("province"), c.String("locality"), c.String("common-name"), c.StringSlice("permit-domain"), opts...)
+	crt, err := pkix.CreateCertificateAuthorityWithOptions(key, c.String("organizational-unit"), expiresTime, c.String("organization"), c.String("country"), c.String("province"), c.String("locality"), c.String("common-name"), c.StringSlice("permit-domain"), c.StringSlice("crl-distribution-endpoints"), opts...)
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Create certificate error:", err)

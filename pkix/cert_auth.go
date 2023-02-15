@@ -28,14 +28,14 @@ type Option func(*x509.Certificate)
 
 // CreateCertificateAuthority creates Certificate Authority using existing key.
 // CertificateAuthorityInfo returned is the extra infomation required by Certificate Authority.
-func CreateCertificateAuthority(key *Key, organizationalUnit string, expiry time.Time, organization string, country string, province string, locality string, commonName string, permitDomains []string) (*Certificate, error) {
+func CreateCertificateAuthority(key *Key, organizationalUnit string, expiry time.Time, organization string, country string, province string, locality string, commonName string, permitDomains []string, crlDistribution []string) (*Certificate, error) {
 	// Passing all arguments to CreateCertificateAuthorityWithOptions
-	return CreateCertificateAuthorityWithOptions(key, organizationalUnit, expiry, organization, country, province, locality, commonName, permitDomains)
+	return CreateCertificateAuthorityWithOptions(key, organizationalUnit, expiry, organization, country, province, locality, commonName, permitDomains, crlDistribution)
 }
 
 // CreateCertificateAuthorityWithOptions creates Certificate Authority using existing key with options.
 // CertificateAuthorityInfo returned is the extra infomation required by Certificate Authority.
-func CreateCertificateAuthorityWithOptions(key *Key, organizationalUnit string, expiry time.Time, organization string, country string, province string, locality string, commonName string, permitDomains []string, opts ...Option) (*Certificate, error) {
+func CreateCertificateAuthorityWithOptions(key *Key, organizationalUnit string, expiry time.Time, organization string, country string, province string, locality string, commonName string, permitDomains []string, crlDistribution []string, opts ...Option) (*Certificate, error) {
 	authTemplate := newAuthTemplate()
 
 	subjectKeyID, err := GenerateSubjectKeyID(key.Public)
@@ -68,6 +68,9 @@ func CreateCertificateAuthorityWithOptions(key *Key, organizationalUnit string, 
 		authTemplate.PermittedDNSDomains = permitDomains
 	}
 
+	if len(crlDistribution) > 0 {
+		authTemplate.CRLDistributionPoints = crlDistribution
+	}
 	applyOptions(&authTemplate, opts)
 
 	crtBytes, err := x509.CreateCertificate(rand.Reader, &authTemplate, &authTemplate, key.Public, key.Private)

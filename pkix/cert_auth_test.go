@@ -28,7 +28,7 @@ func TestCreateCertificateAuthority(t *testing.T) {
 		t.Fatal("Failed creating rsa key:", err)
 	}
 
-	crt, err := CreateCertificateAuthority(key, "OU", time.Now().AddDate(5, 0, 0), "test", "US", "California", "San Francisco", "CA Name", []string{".example.com"})
+	crt, err := CreateCertificateAuthority(key, "OU", time.Now().AddDate(5, 0, 0), "test", "US", "California", "San Francisco", "CA Name", []string{".example.com"}, nil)
 	if err != nil {
 		t.Fatal("Failed creating certificate authority:", err)
 	}
@@ -96,7 +96,7 @@ func TestCreateCertificateAuthorityWithOptions(t *testing.T) {
 				t.Fatal("Failed creating rsa key:", err)
 			}
 
-			crt, err := CreateCertificateAuthorityWithOptions(key, "OU", time.Now().AddDate(5, 0, 0), "test", "US", "California", "San Francisco", "CA Name", []string{".example.com"}, WithPathlenOption(tc.pathlen, tc.excludePathlen))
+			crt, err := CreateCertificateAuthorityWithOptions(key, "OU", time.Now().AddDate(5, 0, 0), "test", "US", "California", "San Francisco", "CA Name", []string{".example.com"}, nil, WithPathlenOption(tc.pathlen, tc.excludePathlen))
 			if err != nil {
 				t.Fatal("Failed creating certificate authority:", err)
 			}
